@@ -1,0 +1,15 @@
+torch
+torchvision
+torchaudio
+matplotlib
+pandas
+opencv-python
+tqdm
+anomalib
+pypylon
+fastapi[all]
+uvicorn[standard]
+numpy
+opencv-python
+pillow
+redis
