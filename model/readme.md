@@ -3,6 +3,9 @@
 ## Reconstruction-based methods
 The core idea is to conduct encoding and decoding on the input normal images and train the neural network with the aim of reconstruction. Based on the assumption
 that by training only on normal images, the model will not be able to reconstruct abnormal images correctly, and the anomaly scores will be higher.
+
+Classical methods based on reconstruction include autoencoders (AE [122], [123]) , variational auto-encoders (VAE [124]) and generative adversarial networks (GAN [125]).
+
 * Ven.,CAVGA [92];
 * Liu,UTAD [93];
 * Yang,DFR [94];
