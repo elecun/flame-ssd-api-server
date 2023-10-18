@@ -12,4 +12,5 @@ uvicorn[standard]
 numpy
 opencv-python
 pillow
-redis
+redis[hiredis]
+h5py
