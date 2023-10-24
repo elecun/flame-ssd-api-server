@@ -12,12 +12,9 @@ import signal
 import argparse
 import pathlib
 from module import camera_module
-import datetime
 import cv2
 import timeit
 
-from image_event_printer import ImageEventPrinter
-from configuration_event_printer import ConfigurationEventPrinter
 
 WORKING_PATH = pathlib.Path(__file__).parent
 NUM_CAMERAS = 10
