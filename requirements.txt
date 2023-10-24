@@ -14,3 +14,4 @@ opencv-python
 pillow
 redis[hiredis]
 h5py
+paho-mqtt
