@@ -45,11 +45,7 @@ if __name__ == "__main__":
         # setup camera array
         _camera_container = pylon.InstantCameraArray(len(_devices))
         
-        for idx, camera in enumerate(_camera_container):
-            camera.RegisterConfiguration(pylon.SoftwareTriggerConfiguration(), pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_Delete)
-            camera.RegisterConfiguration(ConfigurationEventPrinter(), pylon.RegistrationMode_Append, pylon.Cleanup_Delete)
-            camera.RegisterImageEventHandler(ImageEventPrinter(), pylon.RegistrationMode_Append, pylon.Cleanup_Delete)
-            
+        for idx, camera in enumerate(_camera_container):            
             if not camera.IsPylonDeviceAttached():
                 camera.Attach(_tlf.CreateDevice(_devices[idx]))
                 camera.Open()
