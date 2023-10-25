@@ -49,8 +49,8 @@ if __name__ == "__main__":
                 print("Using device ", camera.GetDeviceInfo().GetFullName())
                 
 
-        _camera_container.StartGrabbing(pylon.GrabStrategy_LatestImageOnly)
-        #_camera_container.StartGrabbing(pylon.GrabStrategy_OneByOne)
+        #_camera_container.StartGrabbing(pylon.GrabStrategy_LatestImageOnly)
+        _camera_container.StartGrabbing(pylon.GrabStrategy_OneByOne)
         #_camera_container.StartGrabbing(pylon.GrabStrategy_UpcomingImage)
         #_camera_container.StartGrabbing(pylon.GrabStrategy_LatestImages)
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
                 end = timeit.default_timer()
                 fps = float(1/(end-start))
                 cv2.putText(img, f"fps:{fps})", (10,50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2, cv2.LINE_AA)
-                cv2.namedWindow(f"{cameraContextValue}", cv2.WINDOW_NORMAL)
+                cv2.namedWindow(f"{cameraContextValue}", cv2.WINDOW_AUTOSIZE)
                 cv2.imshow(f"{cameraContextValue}", img)
                 k = cv2.waitKey(1)
                 if k == 27:
