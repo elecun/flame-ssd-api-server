@@ -19,6 +19,7 @@ import signal
 
 WORKING_PATH = pathlib.Path(__file__).parent
 NUM_CAMERAS = 10
+CAMERA_TICK_TIME = 8 # acA1300-60gc = 125MHz(PTP disabled), 1 Tick = 8ns
 
 '''
 Manager Entry
@@ -57,12 +58,13 @@ if __name__ == "__main__":
             if not camera.IsPylonDeviceAttached():
                 camera.Attach(_tlf.CreateDevice(_devices[idx]))
                 camera.Open()
+
                 print("Using device ", camera.GetDeviceInfo().GetFullName())
                 
 
-        #_camera_container.StartGrabbing(pylon.GrabStrategy_LatestImageOnly)
+        #_camera_container.StartGrabbing(pylon.GrabStrategy_LatestImageOnly, pylon.GrabLoop_ProvidedByUser)
         _camera_container.StartGrabbing(pylon.GrabStrategy_OneByOne, pylon.GrabLoop_ProvidedByUser)
-        #_camera_container.StartGrabbing(pylon.GrabStrategy_UpcomingImage)
+        #_camera_container.StartGrabbing(pylon.GrabStrategy_UpcomingImage, pylon.GrabLoop_ProvidedByUser)
         #_camera_container.StartGrabbing(pylon.GrabStrategy_LatestImages)
 
         # convert pylon image to opencv BGR format
@@ -72,15 +74,23 @@ if __name__ == "__main__":
 
         # grab
         _grab_result = {}
+        _grab_tick = {}
         while _camera_container.IsGrabbing():
-            start = timeit.default_timer()
 
             for idx, camera in enumerate(_camera_container):
+                # t_start = timeit.default_timer()
                 _grab_result[idx] = camera.RetrieveResult(5000, pylon.TimeoutHandling_ThrowException)
+                _fps = 0
 
                 if _grab_result[idx].GrabSucceeded():
                     image = _converter.Convert(_grab_result[idx])
                     raw_image = image.GetArray()
+
+                _now_tick = _grab_result[idx].GetTimeStamp()
+                if len(_grab_tick)==_camera_container.GetSize():
+                    _fps = 1/((_now_tick - _grab_tick[idx])*CAMERA_TICK_TIME/1000000000)
+                    cv2.putText(raw_image, f"fps:{_fps:.1f}", (10,50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2, cv2.LINE_AA)
+                _grab_tick[idx] = _now_tick
                 
                 if _show==True:
                     cv2.namedWindow(f"{idx}", cv2.WINDOW_AUTOSIZE)
@@ -93,13 +103,15 @@ if __name__ == "__main__":
                 break
             
         _camera_container.StopGrabbing()
+        _camera_container.Close()
         cv2.destroyAllWindows()
 
     except genicam.GenericException as e:
-        print(f"Exception : {e.GetDescription()}")
+        print(f"Exception : {e}")
     except Exception as e:
         print(f"Exception : {e}")
     except KeyboardInterrupt as e:
         if _camera_container.IsGrabbing():
             _camera_container.StopGrabbing()
+            _camera_container.Close()
         print(f"Program Terminated")
