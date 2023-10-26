@@ -16,3 +16,4 @@ redis[hiredis]
 h5py
 paho-mqtt
 celery
+joblib
